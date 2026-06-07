@@ -1,0 +1,82 @@
+name: Release
+
+on:
+    push:
+        branches: [main]
+
+permissions:
+    contents: write # push tags + create the GitHub release
+    pull-requests: write # changesets opens the "Version Packages" PR
+    id-token: write # OIDC token for npm trusted publishing
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        env:
+            # Releases are changeset-driven, not commit-driven — skip the local
+            # git hooks when the changesets action commits the version bump.
+            HUSKY: 0
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v6
+              with:
+                  # Full history + tags to detect prior releases, and persist the
+                  # PAT so the publish step can push tags without re-auth.
+                  fetch-depth: 0
+                  token: ${{ secrets.GH_TOKEN }}
+
+            - name: Enable corepack
+              run: corepack enable
+
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .nvmrc
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            # OIDC trusted publishing needs npm >= 11.5.1 (newer than Node 24
+            # ships), and `yarn npm publish` doesn't do the OIDC token exchange.
+            - name: Update npm for OIDC trusted publishing
+              run: npm install --global npm@latest
+
+            # With changesets pending, opens (or updates) the "Version Packages"
+            # PR. Once that PR merges (none pending), this is a no-op and we
+            # publish below.
+            - name: Version
+              id: changesets
+              uses: changesets/action@v1
+              with:
+                  version: yarn changeset version
+                  title: "chore(release): version packages"
+                  commit: "chore(release): version packages"
+
+            # Runs on the push that merges the version PR. The npm and tag checks
+            # are independent so the step is a safe no-op on every other push.
+            - name: Publish
+              if: steps.changesets.outputs.hasChangesets == 'false'
+              run: |
+                  PKG="$(node -p "require('./package.json').name")"
+                  VERSION="$(node -p "require('./package.json').version")"
+                  TAG="v${VERSION}"
+                  MAJOR="v${VERSION%%.*}"
+
+                  # Publish to npm via OIDC (no token) unless already on the registry.
+                  npm view "${PKG}@${VERSION}" version >/dev/null 2>&1 \
+                      || npm publish --access public --provenance
+
+                  # Tag the release and move the floating major tag (e.g. v1) onto
+                  # it, unless this version is already tagged.
+                  if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+                      echo "${TAG} already tagged."
+                  else
+                      git tag "${TAG}"
+                      git tag -f "${MAJOR}" "${TAG}"
+                      git push origin "${TAG}" "+refs/tags/${MAJOR}"
+                      gh release create "${TAG}" --title "${TAG}" --generate-notes
+                  fi

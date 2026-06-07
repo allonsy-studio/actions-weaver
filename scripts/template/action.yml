@@ -1,0 +1,12 @@
+name: {{ ACTION_NAME }}
+description: {{ ACTION_DESCRIPTION }}
+author: {{ ACTION_AUTHOR }}
+branding:
+    icon: zap
+    color: blue
+
+{{ ACTION_IO }}
+
+runs:
+    using: node24
+    main: index.js

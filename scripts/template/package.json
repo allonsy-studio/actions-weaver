@@ -1,0 +1,82 @@
+{
+	"$schema": "https://www.schemastore.org/package.json",
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"name": "{{ ACTION_NAME }}",
+	"version": "0.0.0",
+	"description": "{{ ACTION_DESCRIPTION }}",
+	"license": "MPL-2.0",
+	"author": "{{ ACTION_AUTHOR }} <{{ ACTION_AUTHOR_EMAIL }}> (https://github.com/{{ ACTION_AUTHOR }})",
+	"homepage": "https://github.com/{{ OWNER }}/{{ ACTION_NAME }}#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/{{ OWNER }}/{{ ACTION_NAME }}.git"
+	},
+	"bugs": {
+		"url": "https://github.com/{{ OWNER }}/{{ ACTION_NAME }}/issues"
+	},
+	"type": "module",
+	"main": "index.js",
+	"files": [
+		"index.js",
+		"main.js",
+		"action.yml",
+		".github/*.md",
+		"README.md",
+		"CHANGELOG.md",
+		"package.json",
+		"LICENSE"
+	],
+	"scripts": {
+		"changeset": "changeset",
+		"coverage": "yarn test --coverage",
+		"format": "yarn lint --fix",
+		"lint": "eslint --no-error-on-unmatched-pattern --no-warn-ignored --cache '**/*'",
+		"precommit": "lint-staged",
+		"prepare": "husky && envoy || true",
+		"test": "node --experimental-vm-modules $(yarn bin jest)"
+	},
+	"dependencies": {
+		"@actions/core": "^3.0.1",
+		"@actions/github": "^9.1.1"
+	},
+	"devDependencies": {
+		"@allons-y/envoy": "^1.1.0",
+		"@changesets/cli": "^2.31.0",
+		"@changesets/get-github-info": "^0.8.0",
+		"@commitlint/cli": "^21.0.1",
+		"@commitlint/config-conventional": "^21.0.2",
+		"@eslint/compat": "^1.4.1",
+		"@eslint/js": "^10.0.1",
+		"@eslint/json": "^1.2.0",
+		"@eslint/markdown": "^8.0.2",
+		"@octokit/core": "^7.0.6",
+		"@stylistic/eslint-plugin": "^2.13.0",
+		"eslint": "^10.4.1",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-jest": "^29.15.2",
+		"eslint-plugin-jsonc": "^3.2.0",
+		"eslint-plugin-node": "^11.1.0",
+		"globals": "^17.6.0",
+		"husky": "^9.1.7",
+		"jest": "^30.4.2",
+		"lint-staged": "^17.0.4",
+		"prettier": "^3.0.0"
+	},
+	"keywords": [
+		"actions",
+		"github"
+	],
+	"engines": {
+		"node": ">=24"
+	},
+	"lint-staged": {
+		"*": [
+			"eslint --fix --format stylish"
+		],
+		".github/renovate.json": "npx --yes --package renovate -- renovate-config-validator --strict"
+	},
+	"packageManager": "yarn@4.16.0"
+}
