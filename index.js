@@ -6,7 +6,7 @@ import run from "./main.js";
 const token = core.getInput("token", { required: true });
 
 const client = getOctokit(token, {
-	userAgent: "{{ ACTION_NAME }}",
+	userAgent: "weaver",
 });
 
 run(client, context).catch((err) => {

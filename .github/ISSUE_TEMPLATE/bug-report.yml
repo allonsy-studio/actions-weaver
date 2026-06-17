@@ -1,7 +1,7 @@
 name: 🐛 Bug report
 description: Report a problem with this action
 title: "[Bug]: "
-labels: ["fix"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -11,9 +11,22 @@ body:
   - type: input
     id: version
     attributes:
-      label: Version
-      description: Which tag, branch, or commit SHA are you using? (e.g. `v3`, `v3.0.0`, `main`)
-      placeholder: v1
+      label: Action version
+      description: Which tag, branch, or commit SHA were you using? (e.g. `v3`, `v3.0.0`, `main`)
+      placeholder: v3
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow snippet
+      description: Paste the relevant section of your `.github/workflows/*.yml` (or a minimal reproducer). Redact any secrets.
+      render: yaml
+      placeholder: |
+        - uses: allonsy-studio/weaver@v1
+          with:
+            limit: 10
     validations:
       required: true
 

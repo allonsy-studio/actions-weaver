@@ -1,26 +1,24 @@
 {
 	"$schema": "https://www.schemastore.org/package.json",
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
-	"name": "@allons-y/template-actions",
+	"private": true,
 	"version": "0.0.0",
-	"description": "A template repository for the creation of new GitHub Actions.",
+	"description": "A GitHub Action for organizational-led markdown templating",
 	"license": "MPL-2.0",
-	"author": "Cassondra Roberts <castastrophe@users.noreply.github.com> (https://allons-y.studio)",
-	"homepage": "https://github.com/allonsy-studio/template-actions#readme",
+	"author": "Cassondra Roberts <castastrophe@users.noreply.github.com> (https://allonsy.studio)",
+	"homepage": "https://github.com/allonsy-studio/actions-weaver#readme",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/allonsy-studio/template-actions.git"
+		"url": "git+https://github.com/allonsy-studio/actions-weaver.git"
 	},
 	"bugs": {
-		"url": "https://github.com/allonsy-studio/template-actions/issues"
+		"url": "https://github.com/allonsy-studio/actions-weaver/issues"
 	},
 	"type": "module",
-	"main": "scripts/rename.js",
+	"main": "index.js",
 	"files": [
-		"scripts/**/*",
+		"index.js",
+		"main.js",
+		"action.yml",
 		".github/*.md",
 		"README.md",
 		"CHANGELOG.md",
@@ -29,28 +27,29 @@
 	],
 	"scripts": {
 		"changeset": "changeset",
-		"ci": "yarn format",
 		"coverage": "yarn test --coverage",
 		"format": "yarn lint --fix",
 		"lint": "eslint --no-error-on-unmatched-pattern --no-warn-ignored --cache '**/*'",
 		"precommit": "lint-staged",
 		"prepare": "husky && envoy || true",
-		"rename": "node scripts/rename.js",
 		"test": "node --experimental-vm-modules $(yarn bin jest)"
+	},
+	"dependencies": {
+		"@actions/core": "^3.0.1",
+		"@actions/github": "^9.1.1"
 	},
 	"devDependencies": {
 		"@allons-y/envoy": "^1.1.0",
 		"@changesets/cli": "^2.31.0",
 		"@changesets/get-github-info": "^0.8.0",
-		"@clack/prompts": "^1.5.1",
 		"@commitlint/cli": "^21.0.1",
 		"@commitlint/config-conventional": "^21.0.2",
 		"@eslint/compat": "^1.4.1",
 		"@eslint/js": "^10.0.1",
 		"@eslint/json": "^1.2.0",
 		"@eslint/markdown": "^8.0.2",
+		"@octokit/core": "^7.0.6",
 		"@stylistic/eslint-plugin": "^2.13.0",
-		"commander": "^15.0.0",
 		"eslint": "^10.4.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-jest": "^29.15.2",

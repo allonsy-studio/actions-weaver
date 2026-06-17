@@ -47,7 +47,8 @@ Changes that don't affect consumers (docs, tests, CI, internal refactors) don't 
 - Add a changeset if your change affects consumers.
 - The CI workflow runs build, lint, and the full test suite — make sure it's green.
 - Releases are automatic: once a PR merges to `main`, changesets opens (or updates) a "Version Packages" PR that applies the pending bumps and updates the changelog. Merging that PR publishes the package to npm via [OIDC trusted publishing](https://docs.npmjs.com/trusted-publishers) (no token), tags the release, and moves the floating `vN` major tag.
+  - One-time setup: do an initial manual `npm publish` to create the package, then register this repo as a [trusted publisher](https://docs.npmjs.com/trusted-publishers) on npmjs.com (GitHub Actions → this repo → workflow `release.yml`).
 
 ## Questions
 
-Stuck on something? Start a thread in [Discussions](https://github.com/allonsy-studio/template-actions/discussions). The issue tracker is for bugs and feature requests.
+Stuck on something? Start a thread in [Discussions](https://github.com/allonsy-studio/weaver/discussions). The issue tracker is for bugs and feature requests.

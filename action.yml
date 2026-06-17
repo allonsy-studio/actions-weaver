@@ -1,0 +1,76 @@
+name: weaver
+description: A top-down markdown templating tool
+author: castastrophe
+branding:
+    icon: zap
+    color: blue
+
+inputs:
+    token:
+        description: "Token with write access to the target repos (a PAT or GitHub App token; the default GITHUB_TOKEN cannot write cross-repo)."
+        required: false
+        default: "${{ github.token }}"
+    templates:
+        description: "Directory of template `*.md` files. Each file's basename becomes its block name (footer.md → weaver:footer)."
+        required: false
+        default: "templates"
+    target-file:
+        description: "File to inject template blocks into within each target repo."
+        required: false
+        default: "README.md"
+    repos:
+        description: 'Comma/newline-separated list of repo names, or "*" for every non-archived, non-fork repo in the org.'
+        required: false
+        default: "*"
+    exclude:
+        description: "Comma/newline-separated repo names to skip (only applies when repos is \"*\")."
+        required: false
+    skip-forks:
+        description: "Skip forked repos when listing the org."
+        required: false
+        default: "true"
+    skip-archived:
+        description: "Skip archived repos when listing the org."
+        required: false
+        default: "true"
+    variables:
+        description: "JSON object of template variables, merged on top of the built-in repo/org variables."
+        required: false
+    managed-notice:
+        description: "Notice text inserted below each START marker."
+        required: false
+    commit-message:
+        description: "Commit message for the sync commit (supports template variables)."
+        required: false
+        default: "chore: sync templates via Weaver [skip ci]"
+    branch:
+        description: "Head branch name created in each target repo for the pull request."
+        required: false
+        default: "weaver/sync-templates"
+    base:
+        description: "Base branch for the pull request. Defaults to each repo's default branch."
+        required: false
+    pr-title:
+        description: "Pull request title (supports template variables)."
+        required: false
+    pr-body:
+        description: "Pull request body (supports template variables, including {{ blocks }})."
+        required: false
+    dry-run:
+        description: "Render and diff without creating branches or pull requests."
+        required: false
+        default: "false"
+    max-value-length:
+        description: "Maximum length for an interpolated variable value before truncation."
+        required: false
+        default: "1000"
+
+outputs:
+    pull-requests:
+        description: "JSON array of { repo, url, number } for every pull request opened or updated."
+    summary:
+        description: "JSON object counting opened / updated / skipped / dry-run / failed repos."
+
+runs:
+    using: node24
+    main: index.js
