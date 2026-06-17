@@ -19,9 +19,9 @@ const noop = (content) => applyBlocks(content, { header: "X" }, "");
 const baseOpts = {
 	path: "README.md",
 	branch: "weaver/sync-templates",
-	commitMessage: "msg",
-	prTitle: "title",
-	prBody: "body",
+	commitMessage: (applied) => `sync ${applied.join(",")}`,
+	prTitle: () => "title",
+	prBody: (applied) => `blocks: ${applied.join(",")}`,
 	dryRun: false,
 };
 
@@ -90,6 +90,13 @@ describe("syncRepo", () => {
 		expect(result.number).toBe(1);
 		expect(client.rest.git.createRef).toHaveBeenCalled();
 		expect(client.rest.repos.createOrUpdateFileContents).toHaveBeenCalled();
+		// Messages reflect only the blocks that actually changed in this repo.
+		expect(client.rest.repos.createOrUpdateFileContents).toHaveBeenCalledWith(
+			expect.objectContaining({ message: "sync footer" }),
+		);
+		expect(client.rest.pulls.create).toHaveBeenCalledWith(
+			expect.objectContaining({ body: "blocks: footer" }),
+		);
 	});
 
 	it("reuses an existing open pull request", async () => {

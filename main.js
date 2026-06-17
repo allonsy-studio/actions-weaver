@@ -55,14 +55,11 @@ export default async function run(client, context) {
 	const repos = await resolveRepos(client, config);
 	core.info(`Resolved ${repos.length} target repo(s).`);
 
-	const blockNames = templates.map((t) => t.name).join(", ");
-
 	/** @type {import("./commit.js").SyncResult[]} */
 	const results = [];
 
 	for (const repo of repos) {
 		const context_ = buildContext(repo, config.variables);
-		const messageContext = { ...context_, blocks: blockNames };
 
 		/** @param {string} content */
 		const transform = (content) => {
@@ -75,14 +72,20 @@ export default async function run(client, context) {
 			return applyBlocks(content, renderedByName, config.managedNotice);
 		};
 
+		// Message builders are rendered lazily with the blocks that actually
+		// changed in this repo, so {{ blocks }} is per-repo accurate.
+		/** @param {string} template */
+		const renderMessage = (template) => (/** @type {string[]} */ applied) =>
+			render(template, { ...context_, blocks: applied.join(", ") });
+
 		try {
 			const result = await syncRepo(client, repo, {
 				path: config.targetFile,
 				branch: config.branch,
 				base: config.base,
-				commitMessage: render(config.commitMessage, messageContext),
-				prTitle: render(config.prTitle, messageContext),
-				prBody: render(config.prBody, messageContext),
+				commitMessage: renderMessage(config.commitMessage),
+				prTitle: renderMessage(config.prTitle),
+				prBody: renderMessage(config.prBody),
 				dryRun: config.dryRun,
 				transform,
 			});

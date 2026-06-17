@@ -103,9 +103,9 @@ async function findOpenPr(client, { owner, repo, branch, base }) {
  *   path: string,
  *   branch: string,
  *   base?: string,
- *   commitMessage: string,
- *   prTitle: string,
- *   prBody: string,
+ *   commitMessage: (applied: string[]) => string,
+ *   prTitle: (applied: string[]) => string,
+ *   prBody: (applied: string[]) => string,
  *   dryRun: boolean,
  *   transform: (content: string) => import("./markers.js").ApplyResult,
  * }} opts
@@ -153,7 +153,7 @@ export async function syncRepo(client, repo, opts) {
 			owner,
 			repo: name,
 			path: opts.path,
-			message: opts.commitMessage,
+			message: opts.commitMessage(result.applied),
 			content: encode(headResult.content),
 			branch: opts.branch,
 			...(headFile ? { sha: headFile.sha } : {}),
@@ -175,8 +175,8 @@ export async function syncRepo(client, repo, opts) {
 	const pr = await client.rest.pulls.create({
 		owner,
 		repo: name,
-		title: opts.prTitle,
-		body: opts.prBody,
+		title: opts.prTitle(result.applied),
+		body: opts.prBody(result.applied),
 		head: opts.branch,
 		base,
 	});
