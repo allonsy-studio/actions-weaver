@@ -51,12 +51,24 @@ function stringify(value) {
  * Strip HTML comment sequences and clamp length. Marker integrity depends on
  * comments only ever coming from the template author, never interpolated data.
  *
+ * The delimiters are removed in a fixpoint loop rather than a single pass: a
+ * lone `.replace()` can leave a `<!--` behind when removal splices adjacent
+ * fragments into a fresh delimiter (e.g. `<!<!---->-->`). Both `-->` and the
+ * lesser-known `--!>` close an HTML comment, so both are recognized.
+ *
  * @param {string} value
  * @param {number} [maxLength]
  * @returns {string}
  */
 export function sanitize(value, maxLength = MAX_VALUE_LENGTH) {
-	const stripped = value.replace(/<!--[\s\S]*?-->/g, "").replace(/<!--|-->/g, "");
+	let stripped = value;
+	let previous;
+	do {
+		previous = stripped;
+		// Remove complete comments (content included), then any residual
+		// delimiters left unpaired or exposed by the previous removal.
+		stripped = stripped.replace(/<!--[\s\S]*?--!?>/g, "").replace(/<!--|--!?>/g, "");
+	} while (stripped !== previous);
 	return stripped.length > maxLength ? stripped.slice(0, maxLength) : stripped;
 }
 

@@ -37,6 +37,18 @@ describe("template", () => {
 			expect(sanitize("a<!--b")).toBe("ab");
 		});
 
+		it("recognizes the --!> comment terminator", () => {
+			expect(sanitize("a<!-- x --!>b")).toBe("ab");
+		});
+
+		it("leaves no delimiter behind when fragments recombine", () => {
+			// A single-pass strip would splice the outer fragments into a fresh
+			// `<!--`; the fixpoint loop removes it. Result must contain neither.
+			const out = sanitize("<!<!---->-->x");
+			expect(out).not.toContain("<!--");
+			expect(out).not.toContain("-->");
+		});
+
 		it("truncates to the max length", () => {
 			expect(sanitize("abcdef", 3)).toBe("abc");
 		});
