@@ -5,18 +5,19 @@ export default {
 	clearMocks: true,
 	moduleFileExtensions: ["js"],
 	testEnvironment: "node",
-	testMatch: ["**/scripts/*.test.js"],
+	testMatch: ["**/*.test.js"],
 	transform: {},
 	verbose: true,
-	// Cover the logic modules (scripts/rename.core.js) only. Entry
-	// shells (index.js, scripts/rename.js) and config files are exercised at
-	// runtime / in the e2e CI run rather than unit-tested.
-	collectCoverageFrom: [
-		"**/scripts/*.js",
-		"!**/scripts/rename.js",
-		"!**/scripts/*.test.js",
-		"!**/node_modules/**",
-	],
+	// Redirect the @actions/* packages to the hand-written manual mocks in
+	// __mocks__/ so both the tests and main.js share the same mocked instance
+	// (no jest.mock / unstable_mockModule needed under native ESM).
+	moduleNameMapper: {
+		"^@actions/core$": "<rootDir>/__mocks__/@actions/core.js",
+		"^@actions/github$": "<rootDir>/__mocks__/@actions/github.js",
+	},
+	// Cover the action's logic (main.js); the entry shell (index.js) and config
+	// files run at action runtime rather than under test.
+	collectCoverageFrom: ["*.js", "!*.config.js", "!.*.js", "!index.js", "!*.test.js", "!**/node_modules/**"],
 	coverageDirectory: "./coverage",
 	coverageReporters: isCI ? ["cobertura", "json"] : ["text", "text-summary"],
 	coverageThreshold: {

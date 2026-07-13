@@ -1,48 +1,116 @@
-# Actions Template Repository
+# Weaver
 
-> A batteries-included template for scaffolding new GitHub Actions.
+> An organizationally-driven (top-down) markdown templating GitHub Action
 
-A starting point for ESM, bundled GitHub Actions — ships with `action.yml`, an
-example handler, Jest (with manual `@actions/*` mocks), ESLint/Prettier,
-Changesets, Renovate, and issue/PR templates, plus a one-shot setup CLI
-that wires it all to your action.
+Weaver runs from a central repo (e.g. your `.github` repo) and threads rendered
+template content into marked sections of files across your other repos. It reads
+and writes through the GitHub API — no cloning — and opens a pull request per
+repo with the changes.
 
-## Use this template
+Consumer repos need zero workflow setup: they just add HTML comment markers to
+the files they want managed.
 
-1. Click **Use this template** on GitHub and create your repository.
-2. `yarn install`
-3. `yarn rename` — an interactive CLI that collects the action name,
-   description, owner, author, and your input/output variables, then rewrites
-   `action.yml`, `package.json`, the README, and everything else before
-   removing itself (the entire `scripts/` directory).
-   - Pass `--dry-run` to preview every change without writing anything.
-   - Supply `--name`, `--description`, `--owner`, and/or `--author` to skip the
-     matching prompts.
-4. Edit `main.js` to implement your action's logic.
-5. Run `yarn changeset` to record any release-worthy change, then commit and
-   push — [Changesets](https://github.com/changesets/changesets) handles
-   versioning, the changelog, and tagging the release.
+```html
+<!-- weaver:footer:START -->
+<!-- weaver:footer:END -->
+```
 
-## What the setup does
+Weaver replaces everything between a matching `START`/`END` pair with the
+rendered template whose name matches the block (`footer.md` → `weaver:footer`).
+Files without markers are left untouched.
 
-- Replaces the `{{ ACTION_NAME }}` / `{{ ACTION_DESCRIPTION }}` /
-  `{{ ACTION_AUTHOR }}` / `{{ ACTION_AUTHOR_EMAIL }}` / `{{ OWNER }}`
-  placeholders across the repository.
-- Generates the `action.yml` inputs/outputs and the README tables from the
-  variables you define.
-- Installs the action-only `package.json`, `jest.config.js`, and `README.md`
-  from `scripts/template/` over the repository's own copies.
-- Detects sensible defaults: the owner from the git remote, and the author from
-  `gh`, the GitHub Actions context, or your commit email.
+## Usage
+
+```yaml
+name: Sync templates
+on:
+    push:
+        branches: [main]
+        paths: ["templates/**"]
+    workflow_dispatch:
+
+jobs:
+    sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - id: weaver
+              uses: allonsy-studio/weaver@v1
+              with:
+                  token: ${{ secrets.WEAVER_PAT }}
+                  templates: templates
+                  variables: |
+                      {
+                        "org": { "website": "https://allons-y.studio" }
+                      }
+            - run: echo '${{ steps.weaver.outputs.pull-requests }}'
+```
+
+**Important:** The default `GITHUB_TOKEN` cannot write to other repos. Supply a
+fine-grained PAT or GitHub App token scoped to the target repos via `token`.
+
+## How it works
+
+1. Read every `*.md` file in the `templates` directory; each file's basename is
+   its block name.
+2. Resolve the target repos (the running repo's owner is used as the org).
+3. For each repo, fetch the target file, render the templates with that repo's
+   metadata, and replace the content between markers.
+4. If anything changed, push to a head branch and open (or reuse) one pull
+   request per repo.
+5. Emit the list of pull requests as an output.
+
+## Templates
+
+Templates use a minimal, logic-light syntax:
+
+| Syntax | Meaning |
+| ------ | ------- |
+| `{{ key }}` | Value, HTML-escaped |
+| `{{{ key }}}` | Value, raw (for URLs and markdown) |
+| `{{#if key}}…{{/if}}` | Conditional inclusion |
+
+Built-in variables per repo: `repo.name`, `repo.full_name`, `repo.description`,
+`repo.url`, `repo.default_branch`, `repo.license`, `repo.language`,
+`repo.topics`, `org.name`, `org.url`. Anything you pass via the `variables`
+input is merged on top.
+
+## Inputs
+
+| Name | Default | Description |
+| ---- | ------- | ----------- |
+| `token` | `${{ github.token }}` | Token with write access to the target repos (PAT or GitHub App token). |
+| `templates` | `templates` | Directory of template `*.md` files; each basename becomes a block name. |
+| `target-file` | `README.md` | File to inject template blocks into within each target repo. |
+| `repos` | `*` | Comma/newline list of repo names, or `*` for every non-archived, non-fork repo. |
+| `exclude` | — | Repo names to skip (only applies when `repos` is `*`). |
+| `skip-forks` | `true` | Skip forked repos when listing the org. |
+| `skip-archived` | `true` | Skip archived repos when listing the org. |
+| `variables` | — | JSON object of template variables, merged over the built-ins. |
+| `managed-notice` | _(see action.yml)_ | Notice text inserted below each START marker. |
+| `commit-message` | `chore: sync templates via Weaver [skip ci]` | Commit message (supports template variables). |
+| `branch` | `weaver/sync-templates` | Head branch created in each target repo for the PR. |
+| `base` | _repo default branch_ | Base branch for the pull request. |
+| `pr-title` | `chore: sync templates via Weaver` | Pull request title (supports template variables). |
+| `pr-body` | _(see action.yml)_ | Pull request body (supports `{{ blocks }}`). |
+| `dry-run` | `false` | Render and diff without creating branches or pull requests. |
+| `max-value-length` | `1000` | Max length for an interpolated value before truncation. |
+
+## Outputs
+
+| Name | Description |
+| ---- | ----------- |
+| `pull-requests` | JSON array of `{ repo, url, number }` for every PR opened or updated. |
+| `summary` | JSON object counting `opened` / `updated` / `skipped` / `dryRun` / `failed` repos. |
 
 ## Development
 
 ```sh
-yarn format    # eslint
 yarn lint      # eslint
 yarn test      # jest
 yarn coverage  # jest with the 80% coverage threshold
 ```
 
 ---
-<sub>Built and maintained by [Allons-y Studio](https://allons-y.studio) — a US-based studio specializing in design systems, front-end architecture, and accessibility.</sub>
+
+_Scaffolded using [`@allons-y/template-actions`](https://github.com/allonsy-studio/template-actions)._
