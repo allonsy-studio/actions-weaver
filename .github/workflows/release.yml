@@ -12,12 +12,6 @@ permissions:
 jobs:
     release:
         runs-on: ubuntu-latest
-        env:
-            # Releases are changeset-driven, not commit-driven — skip the local
-            # git hooks when the changesets action commits the version bump.
-            HUSKY: 0
-            GH_TOKEN: ${{ secrets.GH_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
         steps:
             - name: Check out code
@@ -26,7 +20,6 @@ jobs:
                   # Full history + tags to detect prior releases, and persist the
                   # PAT so the publish step can push tags without re-auth.
                   fetch-depth: 0
-                  token: ${{ secrets.GH_TOKEN }}
 
             - name: Enable corepack
               run: corepack enable
