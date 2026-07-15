@@ -1,6 +1,6 @@
 
-
-
+<!-- weaver:banner:START -->
+<!-- weaver:banner:END -->
 
 # Weaver
 
@@ -39,7 +39,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: weaver
-              uses: @allons-y/actions-weaver@v1
+              uses: @allons-y/actions-weaver@v2
               with:
                   token: ${{ secrets.WEAVER_PAT }}
                   templates: templates
@@ -127,9 +127,8 @@ yarn test      # jest
 yarn coverage  # jest with the 80% coverage threshold
 ```
 
-
-
-
+<!-- weaver:footer:START -->
+<!-- weaver:footer:END -->
 
 ---
 
