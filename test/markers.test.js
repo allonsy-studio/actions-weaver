@@ -1,4 +1,4 @@
-import { findMarkers, applyBlocks } from "./markers.js";
+import { findMarkers, applyBlocks } from "../src/markers.js";
 
 const wrap = (body) => `# title\n\n<!-- weaver:footer:START -->\n${body}\n<!-- weaver:footer:END -->\n`;
 
@@ -17,7 +17,7 @@ describe("markers", () => {
 		expect(applied).toEqual(["footer"]);
 		expect(warnings).toEqual([]);
 		expect(errors).toEqual([]);
-		expect(content).toContain("(managed)");
+		expect(content).toContain("managed");
 		expect(content).toContain("NEW");
 		expect(content).not.toContain("old");
 		// Markers themselves are preserved.

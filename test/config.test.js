@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 
-import { loadConfig, parseList, parseVariables } from "./config.js";
+import { loadConfig, parseList, parseVariables } from "../src/config.js";
 
 const context = { repo: { owner: "monalisa" } };
 

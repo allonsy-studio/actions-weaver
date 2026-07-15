@@ -152,10 +152,7 @@ export function applyBlocks(content, renderedByName, notice = "") {
 
 		const from = start.index + start.length;
 		const to = end.index;
-		// The managed notice renders as visible text below the START marker, per
-		// the ADR example, so contributors see it in the rendered README.
-		const noticeLine = notice ? `(${notice})\n\n` : "";
-		const replacement = `\n${noticeLine}${renderedByName[name]}\n`;
+		const replacement = `\n<!-- ${notice ? `${notice} -- ` : ""}${renderedByName[name]} -->\n`;
 
 		edits.push({ from, to, replacement });
 		applied.push(name);

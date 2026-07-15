@@ -4,7 +4,7 @@ import { jest } from "@jest/globals";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-import run from "./main.js";
+import run from "../src/main.js";
 
 const context = { repo: { owner: "acme" } };
 

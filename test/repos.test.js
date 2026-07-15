@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-import { deepMerge, buildContext, resolveRepos } from "./repos.js";
+import { deepMerge, buildContext, resolveRepos } from "../src/repos.js";
 
 describe("deepMerge", () => {
 	it("merges nested objects with source winning", () => {

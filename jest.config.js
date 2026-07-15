@@ -17,7 +17,7 @@ export default {
 	},
 	// Cover the action's logic (main.js); the entry shell (index.js) runs at
 	// action runtime rather than under test.
-	collectCoverageFrom: ["src/**/*.js", "!src/index.js", "!src/**/*.test.js", "!**/node_modules/**"],
+	collectCoverageFrom: ["src/**/*.js", "!src/index.js", "!**/node_modules/**"],
 	coverageDirectory: "./coverage",
 	coverageReporters: isCI ? ["cobertura", "json"] : ["text", "text-summary"],
 	coverageThreshold: {

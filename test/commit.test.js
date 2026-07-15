@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
 
-import { syncRepo } from "./commit.js";
-import { applyBlocks } from "./markers.js";
+import { syncRepo } from "../src/commit.js";
+import { applyBlocks } from "../src/markers.js";
 
 const repo = {
 	owner: { login: "acme" },
