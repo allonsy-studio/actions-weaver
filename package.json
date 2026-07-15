@@ -1,6 +1,6 @@
 {
 	"$schema": "https://www.schemastore.org/package.json",
-	"private": true,
+	"name": "@allons-y/actions-weaver",
 	"version": "0.0.0",
 	"description": "A GitHub Action for organizational-led markdown templating",
 	"license": "MPL-2.0",

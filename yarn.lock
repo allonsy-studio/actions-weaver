@@ -66,6 +66,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@allons-y/actions-weaver@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@allons-y/actions-weaver@workspace:."
+  dependencies:
+    "@actions/core": "npm:^3.0.1"
+    "@actions/github": "npm:^9.1.1"
+    "@allons-y/envoy": "npm:^1.1.0"
+    "@changesets/cli": "npm:^2.31.0"
+    "@changesets/get-github-info": "npm:^0.8.0"
+    "@commitlint/cli": "npm:^21.0.1"
+    "@commitlint/config-conventional": "npm:^21.0.2"
+    "@eslint/compat": "npm:^1.4.1"
+    "@eslint/js": "npm:^10.0.1"
+    "@eslint/json": "npm:^1.2.0"
+    "@eslint/markdown": "npm:^8.0.2"
+    "@octokit/core": "npm:^7.0.6"
+    "@stylistic/eslint-plugin": "npm:^2.13.0"
+    eslint: "npm:^10.4.1"
+    eslint-config-prettier: "npm:^10.1.8"
+    eslint-plugin-jest: "npm:^29.15.2"
+    eslint-plugin-jsonc: "npm:^3.2.0"
+    eslint-plugin-node: "npm:^11.1.0"
+    globals: "npm:^17.6.0"
+    husky: "npm:^9.1.7"
+    jest: "npm:^30.4.2"
+    lint-staged: "npm:^17.0.4"
+    prettier: "npm:^3.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@allons-y/envoy@npm:^1.1.0":
   version: 1.1.0
   resolution: "@allons-y/envoy@npm:1.1.0"
@@ -6381,36 +6411,6 @@ __metadata:
   checksum: 10c0/4614e4292356cafade0b6031527eea9bc90f2372a22c012313be1dcc69a3b90c7338158b414539be863fa95bfcb2ddcd0587be696841af4e6679d85e62c060c7
   languageName: node
   linkType: hard
-
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    "@actions/core": "npm:^3.0.1"
-    "@actions/github": "npm:^9.1.1"
-    "@allons-y/envoy": "npm:^1.1.0"
-    "@changesets/cli": "npm:^2.31.0"
-    "@changesets/get-github-info": "npm:^0.8.0"
-    "@commitlint/cli": "npm:^21.0.1"
-    "@commitlint/config-conventional": "npm:^21.0.2"
-    "@eslint/compat": "npm:^1.4.1"
-    "@eslint/js": "npm:^10.0.1"
-    "@eslint/json": "npm:^1.2.0"
-    "@eslint/markdown": "npm:^8.0.2"
-    "@octokit/core": "npm:^7.0.6"
-    "@stylistic/eslint-plugin": "npm:^2.13.0"
-    eslint: "npm:^10.4.1"
-    eslint-config-prettier: "npm:^10.1.8"
-    eslint-plugin-jest: "npm:^29.15.2"
-    eslint-plugin-jsonc: "npm:^3.2.0"
-    eslint-plugin-node: "npm:^11.1.0"
-    globals: "npm:^17.6.0"
-    husky: "npm:^9.1.7"
-    jest: "npm:^30.4.2"
-    lint-staged: "npm:^17.0.4"
-    prettier: "npm:^3.0.0"
-  languageName: unknown
-  linkType: soft
 
 "router@npm:^2.2.0":
   version: 2.2.0
