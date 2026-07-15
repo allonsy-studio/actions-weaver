@@ -15,7 +15,7 @@ jobs:
 
         steps:
             - name: Check out code
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   # Full history + tags to detect prior releases, and persist the
                   # PAT so the publish step can push tags without re-auth.
@@ -25,7 +25,7 @@ jobs:
               run: corepack enable
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .nvmrc
                   cache: yarn
@@ -33,14 +33,9 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
-            # OIDC trusted publishing needs npm >= 11.5.1 (newer than Node 24
-            # ships), and `yarn npm publish` doesn't do the OIDC token exchange.
             - name: Update npm for OIDC trusted publishing
               run: npm install --global npm@latest
 
-            # With changesets pending, opens (or updates) the "Version Packages"
-            # PR. Once that PR merges (none pending), this is a no-op and we
-            # publish below.
             - name: Version
               id: changesets
               uses: changesets/action@v1
