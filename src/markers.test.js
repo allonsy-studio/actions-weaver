@@ -51,6 +51,54 @@ describe("markers", () => {
 		expect(errors[0]).toMatch(/duplicate/);
 	});
 
+	it("ignores marker examples inside fenced code blocks", () => {
+		const input = [
+			"Add these markers:",
+			"",
+			"```html",
+			"<!-- weaver:footer:START -->",
+			"<!-- weaver:footer:END -->",
+			"```",
+			"",
+			"<!-- weaver:footer:START -->",
+			"old",
+			"<!-- weaver:footer:END -->",
+			"",
+		].join("\n");
+		const markers = findMarkers(input);
+		expect(markers.map((m) => `${m.name}:${m.type}`)).toEqual(["footer:START", "footer:END"]);
+
+		const { content, applied, warnings, errors } = applyBlocks(input, { footer: "NEW" }, "");
+		expect(errors).toEqual([]);
+		expect(warnings).toEqual([]);
+		expect(applied).toEqual(["footer"]);
+		expect(content).toContain("NEW");
+		expect(content).not.toContain("old");
+		// The fenced example is untouched.
+		expect(content).toContain("```html\n<!-- weaver:footer:START -->\n<!-- weaver:footer:END -->\n```");
+	});
+
+	it("ignores markers in tilde fences and unclosed fences", () => {
+		const tilde = "~~~\n<!-- weaver:footer:START -->\n~~~\n";
+		expect(findMarkers(tilde)).toEqual([]);
+
+		const unclosed = "```\n<!-- weaver:footer:START -->\n<!-- weaver:footer:END -->\n";
+		expect(findMarkers(unclosed)).toEqual([]);
+	});
+
+	it("does not treat a longer closing fence of the other character as a close", () => {
+		const input = [
+			"```",
+			"~~~~",
+			"<!-- weaver:footer:START -->",
+			"```",
+			"<!-- weaver:footer:END -->",
+			"",
+		].join("\n");
+		// The backtick fence closes at the second ```; the END marker after it is real.
+		expect(findMarkers(input).map((m) => `${m.name}:${m.type}`)).toEqual(["footer:END"]);
+	});
+
 	it("warns when END precedes START", () => {
 		const input = "<!-- weaver:footer:END -->\nx\n<!-- weaver:footer:START -->\n";
 		const { warnings } = applyBlocks(input, { footer: "Y" }, "");

@@ -21,7 +21,8 @@ the files they want managed.
 
 Weaver replaces everything between a matching `START`/`END` pair with the
 rendered template whose name matches the block (`footer.md` → `weaver:footer`).
-Files without markers are left untouched.
+Files without markers are left untouched. Marker lines inside fenced code
+blocks (like the example above) are treated as documentation and ignored.
 
 ## Usage
 

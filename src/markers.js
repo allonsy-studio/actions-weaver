@@ -15,6 +15,50 @@
 const MARKER_RE = /^[ \t]*<!-- weaver:(?<name>[\w-]+):(?<type>START|END) -->[ \t]*$/gm;
 
 /**
+ * Matches a code-fence line: ``` or ~~~ (three or more), indented at most
+ * three spaces, with an optional info string.
+ */
+const FENCE_RE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+
+/**
+ * Compute the offset ranges covered by fenced code blocks, so markers quoted
+ * as documentation examples are not mistaken for real ones. Follows the
+ * CommonMark rules that matter here: a closing fence uses the same character,
+ * is at least as long as the opener, and carries no info string; a backtick
+ * opener's info string may not contain backticks; an unclosed fence runs to
+ * the end of the document.
+ *
+ * @param {string} content
+ * @returns {Array<{ from: number, to: number }>}
+ */
+function findFencedRanges(content) {
+	/** @type {Array<{ from: number, to: number }>} */
+	const ranges = [];
+	/** @type {{ char: string, length: number, from: number } | null} */
+	let open = null;
+
+	let offset = 0;
+	for (const line of content.split("\n")) {
+		const match = line.match(FENCE_RE);
+		if (match) {
+			const [, fence, rest] = match;
+			if (!open) {
+				if (fence[0] !== "`" || !rest.includes("`")) {
+					open = { char: fence[0], length: fence.length, from: offset };
+				}
+			} else if (fence[0] === open.char && fence.length >= open.length && rest.trim() === "") {
+				ranges.push({ from: open.from, to: offset + line.length });
+				open = null;
+			}
+		}
+		offset += line.length + 1;
+	}
+	if (open) ranges.push({ from: open.from, to: content.length });
+
+	return ranges;
+}
+
+/**
  * @typedef {Object} Marker
  * @property {string} name
  * @property {"START" | "END"} type
@@ -23,19 +67,23 @@ const MARKER_RE = /^[ \t]*<!-- weaver:(?<name>[\w-]+):(?<type>START|END) -->[ \t
  */
 
 /**
- * Collect every marker occurrence in the given content.
+ * Collect every marker occurrence in the given content. Marker lines inside
+ * fenced code blocks are documentation examples, not markers, and are skipped.
  *
  * @param {string} content
  * @returns {Marker[]}
  */
 export function findMarkers(content) {
+	const fenced = findFencedRanges(content);
 	// matchAll keeps the global regex's lastIndex local to this call.
-	return [...content.matchAll(MARKER_RE)].map((match) => ({
-		name: match.groups.name,
-		type: /** @type {"START" | "END"} */ (match.groups.type),
-		index: match.index,
-		length: match[0].length,
-	}));
+	return [...content.matchAll(MARKER_RE)]
+		.filter((match) => !fenced.some((r) => match.index >= r.from && match.index < r.to))
+		.map((match) => ({
+			name: match.groups.name,
+			type: /** @type {"START" | "END"} */ (match.groups.type),
+			index: match.index,
+			length: match[0].length,
+		}));
 }
 
 /**
