@@ -29,9 +29,6 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
-            - name: Build dist
-              run: yarn bundle
-
             - name: Run test suite with coverage
               run: yarn coverage
 

@@ -4,14 +4,18 @@ on:
     pull_request:
         types: [opened, synchronize, reopened]
 
+# Least privilege by default; jobs opt into the extra scopes they need.
 permissions:
     contents: read
-    checks: write
-    pull-requests: write
 
 jobs:
     lint:
         runs-on: ubuntu-latest
+        # reviewdog posts inline review comments and a check run.
+        permissions:
+            contents: read
+            checks: write
+            pull-requests: write
         steps:
             - name: Check out code
               uses: actions/checkout@v7
@@ -40,7 +44,7 @@ jobs:
                   fail_level: error
                   eslint_flags: "."
 
-    check-dist:
+    build:
         runs-on: ubuntu-latest
         steps:
             - name: Check out code
@@ -60,15 +64,8 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
-            # dist/ is committed so the action runs without an install step;
-            # rebuild it here and fail if that leaves the tree dirty.
+            # dist/ is not committed — it is built at release time and attached
+            # to the tag. Verify the bundle still compiles so a release can't
+            # break on a build that was never exercised on the PR.
             - name: Build dist
               run: yarn build
-
-            - name: Fail if dist is out of date
-              run: |
-                  if ! git diff --quiet -- dist; then
-                      echo "::error::dist/ is out of date. Run 'yarn build' and commit the result."
-                      git diff -- dist
-                      exit 1
-                  fi

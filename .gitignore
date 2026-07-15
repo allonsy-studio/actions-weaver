@@ -61,8 +61,9 @@ web_modules/
 !.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
-# Note: dist/ is intentionally NOT ignored — it holds the bundled action
-# (built via `yarn build`) that GitHub Actions runs at dist/index.js.
+# dist/ holds the bundled action (built via `yarn build`). It is NOT committed
+# to main; the release workflow builds it and attaches it to the release tag.
+dist
 
 # Cache files
 .cache
