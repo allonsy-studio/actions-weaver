@@ -1,5 +1,11 @@
 # @allons-y/actions-weaver
 
+## 3.0.0
+
+### Major Changes
+
+- Rename project with workflow-safe format ([#8](https://github.com/allonsy-studio/actions-weaver/pull/8))
+
 ## 2.0.0
 
 ### Major Changes
