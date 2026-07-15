@@ -1,5 +1,11 @@
 # @allons-y/actions-weaver
 
+## 2.0.0
+
+### Major Changes
+
+- Updating the package name in the action.yml for publishing to GitHub Marketplace ([#6](https://github.com/allonsy-studio/actions-weaver/pull/6))
+
 ## 1.0.0
 
 ### Major Changes
