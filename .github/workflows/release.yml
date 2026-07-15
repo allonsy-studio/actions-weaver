@@ -9,6 +9,9 @@ permissions:
     pull-requests: write # changesets opens the "Version Packages" PR
     id-token: write # OIDC token for npm trusted publishing
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
     release:
         runs-on: ubuntu-latest
