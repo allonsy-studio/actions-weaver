@@ -152,7 +152,7 @@ export function applyBlocks(content, renderedByName, notice = "") {
 
 		const from = start.index + start.length;
 		const to = end.index;
-		const replacement = `\n<!-- ${notice ? `${notice} -- ` : ""}${renderedByName[name]} -->\n`;
+		const replacement = `\n${notice ? `<!-- ${notice} -->\n\n` : ""}${renderedByName[name]}\n`;
 
 		edits.push({ from, to, replacement });
 		applied.push(name);
