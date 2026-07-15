@@ -1,8 +1,6 @@
-<!-- weaver:banner:START -->
-<picture>
-    <img id="user-content-logo" src="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-banner.png" alt="Brought to you by Allons-y Studio" width="1500">
-</picture>
-<!-- weaver:banner:END -->
+
+
+
 
 # Weaver
 
@@ -41,7 +39,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: weaver
-              uses: allonsy-studio/weaver@v1
+              uses: @allons-y/actions-weaver@v1
               with:
                   token: ${{ secrets.WEAVER_PAT }}
                   templates: templates
@@ -58,23 +56,27 @@ fine-grained PAT or GitHub App token scoped to the target repos via `token`.
 ## How it works
 
 1. Read every `*.md` file in the `templates` directory; each file's basename is
-   its block name.
+  its block name.
 2. Resolve the target repos (the running repo's owner is used as the org).
 3. For each repo, fetch the target file, render the templates with that repo's
-   metadata, and replace the content between markers.
+  metadata, and replace the content between markers.
 4. If anything changed, push to a head branch and open (or reuse) one pull
-   request per repo.
+  request per repo.
 5. Emit the list of pull requests as an output.
+
+
 
 ## Templates
 
 Templates use a minimal, logic-light syntax:
 
-| Syntax | Meaning |
-| ------ | ------- |
-| `{{ key }}` | Value, HTML-escaped |
-| `{{{ key }}}` | Value, raw (for URLs and markdown) |
-| `{{#if key}}…{{/if}}` | Conditional inclusion |
+
+| Syntax                | Meaning                            |
+| --------------------- | ---------------------------------- |
+| `{{ key }}`           | Value, HTML-escaped                |
+| `{{{ key }}}`         | Value, raw (for URLs and markdown) |
+| `{{#if key}}…{{/if}}` | Conditional inclusion              |
+
 
 Built-in variables per repo: `repo.name`, `repo.full_name`, `repo.description`,
 `repo.url`, `repo.default_branch`, `repo.license`, `repo.language`,
@@ -83,31 +85,39 @@ input is merged on top.
 
 ## Inputs
 
-| Name | Default | Description |
-| ---- | ------- | ----------- |
-| `token` | `${{ github.token }}` | Token with write access to the target repos (PAT or GitHub App token). |
-| `templates` | `templates` | Directory of template `*.md` files; each basename becomes a block name. |
-| `target-file` | `README.md` | File to inject template blocks into within each target repo. |
-| `repos` | `*` | Comma/newline list of repo names, or `*` for every non-archived, non-fork repo. |
-| `exclude` | — | Repo names to skip (only applies when `repos` is `*`). |
-| `skip-forks` | `true` | Skip forked repos when listing the org. |
-| `skip-archived` | `true` | Skip archived repos when listing the org. |
-| `variables` | — | JSON object of template variables, merged over the built-ins. |
-| `managed-notice` | _(see action.yml)_ | Notice text inserted below each START marker. |
-| `commit-message` | `chore: sync templates via Weaver [skip ci]` | Commit message (supports template variables). |
-| `branch` | `weaver/sync-templates` | Head branch created in each target repo for the PR. |
-| `base` | _repo default branch_ | Base branch for the pull request. |
-| `pr-title` | `chore: sync templates via Weaver` | Pull request title (supports template variables). |
-| `pr-body` | _(see action.yml)_ | Pull request body (supports `{{ blocks }}`). |
-| `dry-run` | `false` | Render and diff without creating branches or pull requests. |
-| `max-value-length` | `1000` | Max length for an interpolated value before truncation. |
+
+| Name               | Default                                      | Description                                                                     |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------- |
+| `token`            | `${{ github.token }}`                        | Token with write access to the target repos (PAT or GitHub App token).          |
+| `templates`        | `templates`                                  | Directory of template `*.md` files; each basename becomes a block name.         |
+| `target-file`      | `README.md`                                  | File to inject template blocks into within each target repo.                    |
+| `repos`            | `*`                                          | Comma/newline list of repo names, or `*` for every non-archived, non-fork repo. |
+| `exclude`          | —                                            | Repo names to skip (only applies when `repos` is `*`).                          |
+| `skip-forks`       | `true`                                       | Skip forked repos when listing the org.                                         |
+| `skip-archived`    | `true`                                       | Skip archived repos when listing the org.                                       |
+| `variables`        | —                                            | JSON object of template variables, merged over the built-ins.                   |
+| `managed-notice`   | *(see action.yml)*                           | Notice text inserted below each START marker.                                   |
+| `commit-message`   | `chore: sync templates via Weaver [skip ci]` | Commit message (supports template variables).                                   |
+| `branch`           | `weaver/sync-templates`                      | Head branch created in each target repo for the PR.                             |
+| `base`             | *repo default branch*                        | Base branch for the pull request.                                               |
+| `pr-title`         | `chore: sync templates via Weaver`           | Pull request title (supports template variables).                               |
+| `pr-body`          | *(see action.yml)*                           | Pull request body (supports `{{ blocks }}`).                                    |
+| `dry-run`          | `false`                                      | Render and diff without creating branches or pull requests.                     |
+| `max-value-length` | `1000`                                       | Max length for an interpolated value before truncation.                         |
+
+
+
 
 ## Outputs
 
-| Name | Description |
-| ---- | ----------- |
-| `pull-requests` | JSON array of `{ repo, url, number }` for every PR opened or updated. |
-| `summary` | JSON object counting `opened` / `updated` / `skipped` / `dryRun` / `failed` repos. |
+
+| Name            | Description                                                                        |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `pull-requests` | JSON array of `{ repo, url, number }` for every PR opened or updated.              |
+| `summary`       | JSON object counting `opened` / `updated` / `skipped` / `dryRun` / `failed` repos. |
+
+
+
 
 ## Development
 
@@ -117,14 +127,10 @@ yarn test      # jest
 yarn coverage  # jest with the 80% coverage threshold
 ```
 
-<!-- weaver:footer:START -->
-<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-light.png">
-    <img id="user-content-logo" src="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-light.png" alt="Brought to you by Allons-y Studio" width="1500">
-</picture>
-<!-- weaver:footer:END -->
+
+
+
 
 ---
 
-_Scaffolded using [`@allons-y/template-actions`](https://github.com/allonsy-studio/template-actions)._
+*Scaffolded using* `[@allons-y/template-actions](https://github.com/allonsy-studio/template-actions)`*.*

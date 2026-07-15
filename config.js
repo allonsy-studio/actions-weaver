@@ -101,7 +101,7 @@ export function loadConfig(context) {
 		prTitle: core.getInput("pr-title").trim() || "chore: sync templates via Weaver",
 		prBody:
 			core.getInput("pr-body").trim() ||
-			"Automated template sync by [Weaver](https://github.com/allonsy-studio/weaver). Updated blocks: {{ blocks }}.",
+			"Automated template sync by [Weaver](https://github.com/allonsy-studio/actions-weaver). Updated blocks: {{ blocks }}.",
 		dryRun: booleanInput("dry-run", false),
 		maxValueLength: maxRaw ? Number(maxRaw) : 1000,
 	};
