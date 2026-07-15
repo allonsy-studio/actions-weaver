@@ -24,7 +24,7 @@ body:
       description: Paste the relevant section of your `.github/workflows/*.yml` (or a minimal reproducer). Redact any secrets.
       render: yaml
       placeholder: |
-        - uses: @allons-y/actions-weaver@v1
+        - uses: @allons-y/actions-weaver@v2
           with:
             limit: 10
     validations:
