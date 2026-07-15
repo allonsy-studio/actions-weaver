@@ -8,9 +8,17 @@
 
 <!-- weaver:banner:END -->
 
-# Weaver
+<h1 align="center">Weaver</h1>
+<p align="center">
+  <b>An organizationally-driven (top-down) markdown templating GitHub Action.</b>
+</p>
 
-> An organizationally-driven (top-down) markdown templating GitHub Action
+<div align="center">
+
+[![Tests][github-image]][github-url]
+[![NPM version][npm-image]][npm-url]
+
+</div>
 
 Weaver runs from a central repo (e.g. your `.github` repo) and threads rendered
 template content into marked sections of files across your other repos. It reads
@@ -137,6 +145,9 @@ yarn coverage  # jest with the 80% coverage threshold
 
 <!-- weaver:footer:END -->
 
----
+*Scaffolded using* [@allons-y/template-actions](https://github.com/allonsy-studio/template-actions).
 
-*Scaffolded using* `[@allons-y/template-actions](https://github.com/allonsy-studio/template-actions)`*.*
+[github-image]: https://github.com/allonsy-studio/actions-weaver/actions/workflows/testing.yml/badge.svg?branch=main
+[github-url]: https://github.com/allonsy-studio/actions-weaver/actions/workflows/testing.yml
+[npm-image]: https://img.shields.io/npm/v/@allons-y/actions-weaver.svg
+[npm-url]: https://www.npmjs.com/package/@allons-y/actions-weaver
