@@ -4,17 +4,21 @@ on:
     pull_request:
         types: [opened, synchronize, reopened]
 
+# Least privilege by default; jobs opt into the extra scopes they need.
 permissions:
     contents: read
-    checks: write
-    pull-requests: write
 
 jobs:
     lint:
         runs-on: ubuntu-latest
+        # reviewdog posts inline review comments and a check run.
+        permissions:
+            contents: read
+            checks: write
+            pull-requests: write
         steps:
             - name: Check out code
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
@@ -22,7 +26,7 @@ jobs:
               run: corepack enable
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .nvmrc
                   cache: yarn
@@ -39,3 +43,29 @@ jobs:
                   reporter: github-pr-review
                   fail_level: error
                   eslint_flags: "."
+
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+
+            - name: Enable corepack
+              run: corepack enable
+
+            - name: Setup Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            # dist/ is not committed — it is built at release time and attached
+            # to the tag. Verify the bundle still compiles so a release can't
+            # break on a build that was never exercised on the PR.
+            - name: Build dist
+              run: yarn build

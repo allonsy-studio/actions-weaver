@@ -61,6 +61,8 @@ web_modules/
 !.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
+# dist/ holds the bundled action (built via `yarn build`). It is NOT committed
+# to main; the release workflow builds it and attaches it to the release tag.
 dist
 
 # Cache files
