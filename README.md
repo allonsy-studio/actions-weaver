@@ -1,3 +1,9 @@
+<!-- weaver:banner:START -->
+<picture>
+    <img id="user-content-logo" src="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-banner.png" alt="Brought to you by Allons-y Studio" width="1500">
+</picture>
+<!-- weaver:banner:END -->
+
 # Weaver
 
 > An organizationally-driven (top-down) markdown templating GitHub Action
@@ -110,6 +116,14 @@ yarn lint      # eslint
 yarn test      # jest
 yarn coverage  # jest with the 80% coverage threshold
 ```
+
+<!-- weaver:footer:START -->
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-light.png">
+    <img id="user-content-logo" src="https://raw.githubusercontent.com/allonsy-studio/.github/main/assets/png/oss-footer-light.png" alt="Brought to you by Allons-y Studio" width="1500">
+</picture>
+<!-- weaver:footer:END -->
 
 ---
 
