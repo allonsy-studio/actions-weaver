@@ -1,4 +1,4 @@
-import { render, sanitize } from "./template.js";
+import { render, sanitize } from "../src/template.js";
 
 describe("template", () => {
 	it("escapes double-brace interpolation", () => {
