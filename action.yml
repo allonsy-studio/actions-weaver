@@ -1,9 +1,9 @@
 name: "@allons-y/actions-weaver"
-description: A top-down markdown templating tool
+description: A top-down markdown templating tool for GitHub organizations
 author: castastrophe
 branding:
-    icon: zap
-    color: blue
+    icon: file-plus
+    color: purple
 
 inputs:
     token:
