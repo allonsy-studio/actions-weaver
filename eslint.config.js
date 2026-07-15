@@ -10,7 +10,7 @@ import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
 	{
-		ignores: ["**/node_modules/**", ".yarn/**", ".cache/**", "scripts/template/**"],
+		ignores: ["**/node_modules/**", ".yarn/**", ".cache/**", "scripts/template/**", "dist/**"],
 	},
 	{
 		files: ["**/*.js"],

@@ -14,7 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check out code
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
@@ -22,7 +22,7 @@ jobs:
               run: corepack enable
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .nvmrc
                   cache: yarn
@@ -39,3 +39,36 @@ jobs:
                   reporter: github-pr-review
                   fail_level: error
                   eslint_flags: "."
+
+    check-dist:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+
+            - name: Enable corepack
+              run: corepack enable
+
+            - name: Setup Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            # dist/ is committed so the action runs without an install step;
+            # rebuild it here and fail if that leaves the tree dirty.
+            - name: Build dist
+              run: yarn build
+
+            - name: Fail if dist is out of date
+              run: |
+                  if ! git diff --quiet -- dist; then
+                      echo "::error::dist/ is out of date. Run 'yarn build' and commit the result."
+                      git diff -- dist
+                      exit 1
+                  fi
