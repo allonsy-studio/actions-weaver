@@ -51,4 +51,4 @@ Changes that don't affect consumers (docs, tests, CI, internal refactors) don't 
 
 ## Questions
 
-Stuck on something? Start a thread in [Discussions](https://github.com/allonsy-studio/weaver/discussions). The issue tracker is for bugs and feature requests.
+Stuck on something? Start a thread in [Discussions](https://github.com/allonsy-studio/actions-weaver/discussions). The issue tracker is for bugs and feature requests.

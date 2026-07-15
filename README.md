@@ -41,7 +41,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: weaver
-              uses: allonsy-studio/weaver@v1
+              uses: @allons-y/actions-weaver@v1
               with:
                   token: ${{ secrets.WEAVER_PAT }}
                   templates: templates

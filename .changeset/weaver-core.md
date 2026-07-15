@@ -1,5 +1,5 @@
 ---
-"allonsy-studio/actions-weaver": minor
+"@allons-y/actions-weaver": major
 ---
 
 Implement the Weaver action: input-driven (no config file) cross-repo markdown
