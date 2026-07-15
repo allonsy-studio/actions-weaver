@@ -65,12 +65,9 @@ fine-grained PAT or GitHub App token scoped to the target repos via `token`.
   request per repo.
 5. Emit the list of pull requests as an output.
 
-
-
 ## Templates
 
 Templates use a minimal, logic-light syntax:
-
 
 | Syntax                | Meaning                            |
 | --------------------- | ---------------------------------- |
@@ -78,14 +75,12 @@ Templates use a minimal, logic-light syntax:
 | `{{{ key }}}`         | Value, raw (for URLs and markdown) |
 | `{{#if key}}…{{/if}}` | Conditional inclusion              |
 
-
 Built-in variables per repo: `repo.name`, `repo.full_name`, `repo.description`,
 `repo.url`, `repo.default_branch`, `repo.license`, `repo.language`,
 `repo.topics`, `org.name`, `org.url`. Anything you pass via the `variables`
 input is merged on top.
 
 ## Inputs
-
 
 | Name               | Default                                      | Description                                                                     |
 | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -106,19 +101,12 @@ input is merged on top.
 | `dry-run`          | `false`                                      | Render and diff without creating branches or pull requests.                     |
 | `max-value-length` | `1000`                                       | Max length for an interpolated value before truncation.                         |
 
-
-
-
 ## Outputs
-
 
 | Name            | Description                                                                        |
 | --------------- | ---------------------------------------------------------------------------------- |
 | `pull-requests` | JSON array of `{ repo, url, number }` for every PR opened or updated.              |
 | `summary`       | JSON object counting `opened` / `updated` / `skipped` / `dryRun` / `failed` repos. |
-
-
-
 
 ## Development
 
