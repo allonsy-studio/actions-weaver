@@ -8,8 +8,7 @@ import run from "../src/main.js";
 
 const context = { repo: { owner: "acme" } };
 
-const README =
-	"# envoy\n\n<!-- weaver:footer:START -->\nold\n<!-- weaver:footer:END -->\n";
+const README = "# envoy\n\n<!-- weaver:footer:START -->\nold\n<!-- weaver:footer:END -->\n";
 const b64 = (s) => Buffer.from(s, "utf8").toString("base64");
 
 const repoData = {
@@ -87,9 +86,7 @@ describe("run", () => {
 				},
 				pulls: {
 					list: jest.fn().mockResolvedValue({ data: [] }),
-					create: jest
-						.fn()
-						.mockResolvedValue({ data: { html_url: "https://pr/1", number: 1 } }),
+					create: jest.fn().mockResolvedValue({ data: { html_url: "https://pr/1", number: 1 } }),
 				},
 			},
 		};
@@ -97,9 +94,7 @@ describe("run", () => {
 		await run(client, context);
 
 		const prCall = core.setOutput.mock.calls.find((c) => c[0] === "pull-requests");
-		expect(JSON.parse(prCall[1])).toEqual([
-			{ repo: "acme/envoy", url: "https://pr/1", number: 1 },
-		]);
+		expect(JSON.parse(prCall[1])).toEqual([{ repo: "acme/envoy", url: "https://pr/1", number: 1 }]);
 		expect(core.setFailed).not.toHaveBeenCalled();
 	});
 
@@ -121,6 +116,29 @@ describe("run", () => {
 
 		await run(client, context);
 		expect(core.setFailed).toHaveBeenCalledWith(expect.stringMatching(/failed for 1/));
+	});
+
+	it("reports repo errors without failing the job when fail-on-error is off", async () => {
+		core.__setInputs({
+			templates: "__fixtures__/templates",
+			org: "acme",
+			repos: "envoy",
+			"fail-on-error": "false",
+		});
+
+		const client = {
+			rest: {
+				repos: {
+					get: jest.fn().mockResolvedValue({ data: repoData }),
+					getContent: jest.fn().mockRejectedValue(new Error("boom")),
+				},
+			},
+		};
+
+		await run(client, context);
+		expect(core.setFailed).not.toHaveBeenCalled();
+		const summaryCall = core.setOutput.mock.calls.find((c) => c[0] === "summary");
+		expect(JSON.parse(summaryCall[1])).toMatchObject({ failed: 1 });
 	});
 
 	it("keeps the existing github mock import wired", () => {

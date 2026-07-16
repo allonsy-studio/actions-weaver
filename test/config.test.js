@@ -43,6 +43,8 @@ describe("loadConfig", () => {
 		expect(config.branch).toBe("weaver/sync-templates");
 		expect(config.dryRun).toBe(false);
 		expect(config.maxValueLength).toBe(1000);
+		expect(config.failOnError).toBe(true);
+		expect(config.maxRetries).toBe(3);
 	});
 
 	it("reads explicit inputs", () => {
@@ -53,6 +55,8 @@ describe("loadConfig", () => {
 			"dry-run": "true",
 			variables: '{"k":"v"}',
 			"max-value-length": "50",
+			"fail-on-error": "false",
+			"max-retries": "5",
 		});
 		const config = loadConfig(context);
 		expect(config.repos).toEqual(["a", "b"]);
@@ -61,5 +65,7 @@ describe("loadConfig", () => {
 		expect(config.dryRun).toBe(true);
 		expect(config.variables).toEqual({ k: "v" });
 		expect(config.maxValueLength).toBe(50);
+		expect(config.failOnError).toBe(false);
+		expect(config.maxRetries).toBe(5);
 	});
 });
