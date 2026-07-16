@@ -3,6 +3,8 @@
  * builds the per-repo variable context used to render templates.
  */
 
+import * as core from "@actions/core";
+
 /**
  * Recursively merge plain objects (source wins). Arrays and scalars are
  * replaced, not merged.
@@ -15,18 +17,8 @@ export function deepMerge(target, source) {
 	const out = { ...target };
 	for (const [key, value] of Object.entries(source)) {
 		const existing = out[key];
-		if (
-			value != null &&
-			typeof value === "object" &&
-			!Array.isArray(value) &&
-			existing != null &&
-			typeof existing === "object" &&
-			!Array.isArray(existing)
-		) {
-			out[key] = deepMerge(
-				/** @type {Record<string, unknown>} */ (existing),
-				/** @type {Record<string, unknown>} */ (value),
-			);
+		if (value != null && typeof value === "object" && !Array.isArray(value) && existing != null && typeof existing === "object" && !Array.isArray(existing)) {
+			out[key] = deepMerge(/** @type {Record<string, unknown>} */ (existing), /** @type {Record<string, unknown>} */ (value));
 		} else {
 			out[key] = value;
 		}
@@ -47,12 +39,23 @@ export function deepMerge(target, source) {
  */
 export async function resolveRepos(client, config) {
 	if (config.repos !== "*") {
-		const repos = await Promise.all(
+		const fetched = await Promise.all(
 			config.repos.map((name) =>
-				client.rest.repos.get({ owner: config.org, repo: name }).then((res) => res.data),
+				client.rest.repos
+					.get({ owner: config.org, repo: name })
+					.then((res) => res.data)
+					.catch((err) => {
+						// A named repo that doesn't exist (or isn't accessible) is
+						// skipped with a warning rather than aborting the whole run.
+						if (err && err.status === 404) {
+							core.warning(`Repo "${config.org}/${name}" was not found — skipping.`);
+							return null;
+						}
+						throw err;
+					}),
 			),
 		);
-		return repos;
+		return fetched.filter(Boolean);
 	}
 
 	let all;

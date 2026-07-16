@@ -23,7 +23,7 @@ inputs:
         required: false
         default: "*"
     exclude:
-        description: "Comma/newline-separated repo names to skip (only applies when repos is \"*\")."
+        description: 'Comma/newline-separated repo names to skip (only applies when repos is "*").'
         required: false
     skip-forks:
         description: "Skip forked repos when listing the org."
@@ -64,6 +64,14 @@ inputs:
         description: "Maximum length for an interpolated variable value before truncation."
         required: false
         default: "1000"
+    fail-on-error:
+        description: "Mark the job failed when one or more repos error. Set to false to report failures without failing the workflow."
+        required: false
+        default: "true"
+    max-retries:
+        description: "Retry attempts for transient GitHub failures (secondary rate limits, 5xx) before a repo is marked failed."
+        required: false
+        default: "3"
 
 outputs:
     pull-requests:

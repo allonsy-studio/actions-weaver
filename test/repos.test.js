@@ -49,6 +49,30 @@ describe("resolveRepos", () => {
 		expect(client.rest.repos.get).toHaveBeenCalledWith({ owner: "acme", repo: "r" });
 	});
 
+	it("skips a named repo that doesn't exist instead of failing", async () => {
+		const client = {
+			rest: {
+				repos: {
+					get: jest
+						.fn()
+						.mockResolvedValueOnce({ data: { name: "here" } })
+						.mockRejectedValueOnce({ status: 404 }),
+				},
+			},
+		};
+		const repos = await resolveRepos(client, { org: "acme", repos: ["here", "gone"] });
+		expect(repos).toEqual([{ name: "here" }]);
+	});
+
+	it("rethrows non-404 errors when fetching a named repo", async () => {
+		const client = {
+			rest: { repos: { get: jest.fn().mockRejectedValue({ status: 500 }) } },
+		};
+		await expect(resolveRepos(client, { org: "acme", repos: ["boom"] })).rejects.toMatchObject({
+			status: 500,
+		});
+	});
+
 	it('lists and filters the org for "*"', async () => {
 		const client = {
 			rest: { repos: { listForOrg: "org", listForUser: "user" } },
