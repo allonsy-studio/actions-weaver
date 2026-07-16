@@ -27,7 +27,7 @@ jobs:
                   cache: yarn
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: yarn install --immutable --frozen-lockfile
 
             - name: Run test suite with coverage
               run: yarn coverage

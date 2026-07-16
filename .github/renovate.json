@@ -23,10 +23,6 @@
 			"minimumReleaseAge": "1 month"
 		},
 		{
-			"groupName": "commitlint ecosystem",
-			"matchPackageNames": ["commitlint", "@commitlint/*"]
-		},
-		{
 			"groupName": "jest ecosystem",
 			"matchPackageNames": ["jest", "ts-jest", "@types/jest", "@jest/*"]
 		},
