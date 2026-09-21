@@ -1,4 +1,4 @@
-# CLAUDE.md
+# Weaver
 
 Weaver is a GitHub Action for organization-led markdown templating. It runs
 from a central repo, renders `*.md` templates, and injects them between
@@ -46,7 +46,8 @@ Use Conventional Commits: `<type>(<optional-scope>): <imperative subject>`
 (lowercase, ≤100 chars, no trailing period). Types: feat, fix, docs, chore,
 refactor, test. Body paragraphs, 1-2 sentences, <80 chars, written in plain prose:
 what changed and why, then behavior/mechanics, then edge cases and tests.
-Do NOT add a "Generated with Claude Code" / Co-Authored-By footer.
+Never add AI attribution to a commit or a PR: no `Co-Authored-By` trailer, no
+"Generated with …" footer, no session URLs.
 
 Releases use Changesets. Any user-facing change needs a changeset (`yarn changeset`); its text is lifted verbatim into CHANGELOG.md and release notes, so write it for a human reader — lead with the outcome, then mechanics, edge cases, and test coverage (see CHANGELOG.md for the house style). PR titles follow the same conventional format; PR bodies summarize behavior changes and call out any new inputs/outputs, which must also be documented in both `action.yml` and the README tables. Keep summaries and descriptions succinct and brief.
 
