@@ -49,52 +49,14 @@ jobs:
             - name: Update npm for OIDC trusted publishing
               run: npm install --global npm@latest
 
-            - name: Configure git identity for release tags
-              run: |
-                git config user.name 'allons-y-studio-bot[bot]'
-                git config user.email '353516968+allons-y-studio-bot[bot]@users.noreply.github.com'
-
-            - name: Create release PR
-              id: changesets
+            - name: Create release PR or publish to npm
               uses: changesets/action@v1
               with:
                 version: yarn run version
+                publish: yarn release
                 title: "chore(release): version packages"
                 commit: "chore(release): version packages"
                 commitMode: github-api
+                createGithubReleases: false
               env:
                 GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-            - name: Build dist
-              if: steps.changesets.outputs.hasChangesets == 'false'
-              run: yarn build
-
-            # dist/ is gitignored, so commit it onto a detached release commit before
-            # `opx release publish` tags HEAD. main is never pushed and stays free of build
-            # output, but `uses: …@vX` resolves a tag that carries the runnable bundle.
-            - name: Publish
-              if: steps.changesets.outputs.hasChangesets == 'false'
-              env:
-                GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-              run: |
-                VERSION="$(node -p "require('./package.json').version")"
-                TAG="v${VERSION}"
-                MAJOR="v${VERSION%%.*}"
-
-                if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
-                    NEW_RELEASE=false
-                else
-                    NEW_RELEASE=true
-                    git add --force dist
-                    git commit --message "build: bundle dist for ${TAG}"
-                fi
-
-                # Publishes to npm via OIDC, tags, pushes the tags, and creates the GitHub
-                # release. Safe to re-run: every step skips what already exists.
-                yarn release
-
-                # Move the floating major tag (e.g. v1) onto the new release.
-                if [ "${NEW_RELEASE}" = true ]; then
-                    git tag -f "${MAJOR}" "${TAG}^{commit}"
-                    git push origin "+refs/tags/${MAJOR}"
-                fi

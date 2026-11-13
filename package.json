@@ -37,7 +37,7 @@
 		"postpack": "pinst --enable",
 		"prepack": "pinst --disable",
 		"prepare": "husky && envoy || true",
-		"release": "opx release publish",
+		"release": "yarn build && opx release publish",
 		"test": "node --experimental-vm-modules $(yarn bin jest)",
 		"version": "opx release version && yarn install --mode update-lockfile"
 	},
