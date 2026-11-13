@@ -30,14 +30,16 @@
 	"scripts": {
 		"build": "rimraf ./dist && ncc build src/index.js --out dist && mv dist/index.js dist/index.mjs && rimraf dist/package.json",
 		"bundle": "yarn format && yarn build",
-		"changeset": "changeset",
+		"changeset": "opx release add",
 		"coverage": "yarn test --coverage",
 		"format": "yarn lint --fix",
 		"lint": "eslint --no-error-on-unmatched-pattern --no-warn-ignored --cache '**/*'",
 		"postpack": "pinst --enable",
 		"prepack": "pinst --disable",
 		"prepare": "husky && envoy || true",
-		"test": "node --experimental-vm-modules $(yarn bin jest)"
+		"release": "yarn build && opx release publish",
+		"test": "node --experimental-vm-modules $(yarn bin jest)",
+		"version": "opx release version && yarn install --mode update-lockfile"
 	},
 	"dependencies": {
 		"@actions/core": "^3.0.1",
@@ -45,8 +47,8 @@
 	},
 	"devDependencies": {
 		"@allons-y/envoy": "^1.1.0",
-		"@changesets/cli": "^2.31.0",
-		"@changesets/get-github-info": "^0.8.0",
+		"@allons-y/opx-cli": "^0.2.0",
+		"@allons-y/opx-release": "^0.1.1",
 		"@eslint/compat": "^1.4.1",
 		"@eslint/js": "^10.0.1",
 		"@eslint/json": "^1.2.0",
