@@ -1,16 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"baseBranchPatterns": ["main"],
-	"customManagers": [
-		{
-			"customType": "regex",
-			"datasourceTemplate": "npm",
-			"depNameTemplate": "@changesets/config",
-			"description": "Keep the $schema pin in .changeset/config.json in sync with @changesets/config",
-			"managerFilePatterns": ["/(^|/)\\.changeset/config\\.json$/"],
-			"matchStrings": ["@changesets/config@(?<currentValue>[\\d.]+)/schema\\.json"]
-		}
-	],
 	"extends": ["config:best-practices", "group:githubArtifactActions"],
 	"labels": ["dependencies", "renovate"],
 	"lockFileMaintenance": {
@@ -31,8 +21,10 @@
 			"matchPackageNames": ["eslint", "typescript-eslint", "@eslint/*", "eslint-plugin-*"]
 		},
 		{
-			"groupName": "changesets ecosystem",
-			"matchPackageNames": ["@changesets/*"]
+			"allowedVersions": "/^v?1(\\.\\d+){0,2}$/",
+			"description": "Hold changesets/action at v1: opx release bundles Changesets CLI 2, and action v2 needs CLI 3. Move both together when opx bundles CLI 3.",
+			"matchManagers": ["github-actions"],
+			"matchPackageNames": ["changesets/action"]
 		}
 	],
 	"postUpdateOptions": ["yarnDedupeHighest"],
