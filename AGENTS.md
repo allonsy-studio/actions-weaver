@@ -49,6 +49,8 @@ what changed and why, then behavior/mechanics, then edge cases and tests.
 Never add AI attribution to a commit or a PR: no `Co-Authored-By` trailer, no
 "Generated with …" footer, no session URLs.
 
+Pull requests are squash-merged: the PR title becomes the commit subject & the commit messages its body, so the title must be a valid Conventional Commits subject.
+
 Releases use Changesets. Any user-facing change needs a changeset (`yarn changeset`); its text is lifted verbatim into CHANGELOG.md and release notes, so write it for a human reader: lead with the outcome, then mechanics, edge cases, and test coverage (see CHANGELOG.md for the house style). PR titles follow the same conventional format; PR bodies summarize behavior changes and call out any new inputs/outputs, which must also be documented in both `action.yml` and the README tables. Keep summaries and descriptions succinct and brief.
 
 ## Style
